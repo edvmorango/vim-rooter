@@ -66,7 +66,7 @@ augroup END
 
 function CustomRooter(targets)
   if !s:activate() | return | endif
-  echom @targets
+  echom a:targets
   let root = getbufvar('%', 'rootDir')
   if empty(root)
     let root = s:root_custom(a:targets)

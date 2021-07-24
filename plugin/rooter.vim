@@ -66,7 +66,7 @@ augroup END
 
 function! CustomRooter(targets)
   echom a:targets
-  if !s:activate_custom(targets) | return | endif
+  if !Activate_custom(targets) | return | endif
 
   let root = getbufvar('%', 'rootDir')
   if empty(root)
@@ -82,7 +82,7 @@ function! CustomRooter(targets)
   call s:cd(root)
 endfunction
 
-function! s:activate_custom(targets)
+function! Activate_custom(targets)
    echom a:targets
   " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
   " set a nofile buftype when you open a directory.

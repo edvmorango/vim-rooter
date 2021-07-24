@@ -54,8 +54,8 @@ function! FindRootDirectory()
 endfunction
 
 
-command! -bar Rooter call <SID>rooter()
-command! -bar RooterToggle call <SID>toggle()
+"command! -bar Rooter call <SID>rooter()
+"command! -bar RooterToggle call <SID>toggle()
 
 
 augroup rooter
@@ -65,7 +65,7 @@ augroup rooter
 augroup END
 
 
-function! rooter(all_patterns = '/,*')
+function! RooterF(all_patterns)
   if !s:activate() | return | endif
 
   let root = getbufvar('%', 'rootDir')

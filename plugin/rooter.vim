@@ -70,6 +70,7 @@ function CustomRooter(targets)
   let root = getbufvar('%', 'rootDir')
   if empty(root)
     let root = s:root_custom(a:targets)
+    echom root
     call setbufvar('%', 'rootDir', root)
   endif
 

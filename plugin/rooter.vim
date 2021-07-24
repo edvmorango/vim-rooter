@@ -65,7 +65,7 @@ augroup rooter
 augroup END
 
 
-function! s:rooter()
+function! rooter(all_patterns = '/,*')
   if !s:activate() | return | endif
 
   let root = getbufvar('%', 'rootDir')
@@ -84,12 +84,12 @@ endfunction
 
 
 " Returns true if we should change to the buffer's root directory, false otherwise.
-function! s:activate()
+function! s:activate(all_patterns)
   " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
   " set a nofile buftype when you open a directory.
   if &buftype != '' && &buftype != 'nofile' | return 0 | endif
 
-  let patterns = split(g:rooter_targets, ',')
+  let patterns = split(all_patterns, ',')
   let fn = expand('%:p', 1)
 
   if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif

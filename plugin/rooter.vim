@@ -65,11 +65,11 @@ augroup rooter
 augroup END
 
 function! CustomRooter(targets)
-  if !Activate_custom(a:targets) | return | endif
+  if s:activate() | return | endif
 
   let root = getbufvar('%', 'rootDir')
   if empty(root)
-    let root = s:root()
+    let root = s:root_custom(a:targets)
     call setbufvar('%', 'rootDir', root)
   endif
 
@@ -81,35 +81,32 @@ function! CustomRooter(targets)
   call s:cd(root)
 endfunction
 
-function! Activate_custom(targets)
-   echom a:targets
-  " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
-  " set a nofile buftype when you open a directory.
-  if &buftype != '' && &buftype != 'nofile' | return 0 | endif
+function! s:root_custom(patterns)
+  let dir = s:current()
 
-  let patterns = split(a:targets, ',')
-  let fn = expand('%:p', 1)
+  " breadth-first search
+  while 1
+    for pattern in a:patterns
+      if pattern[0] == '!'
+        let [p, exclude] = [pattern[1:], 1]
+      else
+        let [p, exclude] = [pattern, 0]
+      endif
+      if s:match(dir, p)
+        if exclude
+          break
+        else
+          return dir
+        endif
+      endif
+    endfor
 
-  if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
+    let [current, dir] = [dir, s:parent(dir)]
+    if current == dir | break | endif
+  endwhile
 
-  " directory
-  if empty(fn) || fn[-1:] == '/'
-    return index(patterns, '/') != -1
-  endif
-
-  " file
-  if !filereadable(fn) | return 0 | endif
-  if !exists('*glob2regpat') | return 1 | endif
-
-  for p in filter(copy(patterns), 'v:val != "/"')
-    if fn =~ glob2regpat(p)
-      return 1
-    endif
-  endfor
-
-  return 0
+  return ''
 endfunction
-
 
 function! s:rooter()
   if !s:activate() | return | endif

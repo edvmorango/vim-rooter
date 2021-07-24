@@ -64,13 +64,21 @@ augroup rooter
   autocmd BufWritePost * nested if !g:rooter_manual_only | call setbufvar('%', 'rootDir', '') | Rooter | endif
 augroup END
 
-function CustomRooter(targets)
+function CustomRooter(pattern)
   if !s:activate() | return | endif
-  echom a:targets
+
   let root = getbufvar('%', 'rootDir')
+  let last_pattern = getbufvar('%', 'lastPattern')
+
+
+  if a:pattern == last_pattern 
+    root = ""
+  endif
+
   if empty(root)
-    let root = s:root_custom(a:targets)
+    let root = s:root_custom(a:pattern)
     echom root
+    call setbufvar('%', 'lastPattern', a:pattern)
     call setbufvar('%', 'rootDir', root)
   endif
 

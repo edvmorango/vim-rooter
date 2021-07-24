@@ -65,8 +65,7 @@ augroup rooter
 augroup END
 
 function! CustomRooter(targets)
-  echom a:targets
-  if !Activate_custom(targets) | return | endif
+  if !Activate_custom(a:targets) | return | endif
 
   let root = getbufvar('%', 'rootDir')
   if empty(root)
@@ -88,7 +87,7 @@ function! Activate_custom(targets)
   " set a nofile buftype when you open a directory.
   if &buftype != '' && &buftype != 'nofile' | return 0 | endif
 
-  let patterns = split(targets, ',')
+  let patterns = split(a:targets, ',')
   let fn = expand('%:p', 1)
 
   if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif

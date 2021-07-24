@@ -70,7 +70,7 @@ function CustomRooter(pattern)
   let root = getbufvar('%', 'rootDir')
   let last_pattern = getbufvar('%', 'lastPattern')
 
-  if empty(root) ||  a:pattern !== last_pattern
+  if empty(root) ||  a:pattern != last_pattern
     let root = s:root_custom(a:pattern)
     call setbufvar('%', 'lastPattern', a:pattern)
     call setbufvar('%', 'rootDir', root)

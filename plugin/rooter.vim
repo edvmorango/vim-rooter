@@ -64,8 +64,8 @@ augroup rooter
   autocmd BufWritePost * nested if !g:rooter_manual_only | call setbufvar('%', 'rootDir', '') | Rooter | endif
 augroup END
 
-function! CustomRooter(targets)
-  if s:activate() | return | endif
+function CustomRooter(targets)
+  if !s:activate() | return | endif
 
   let root = getbufvar('%', 'rootDir')
   if empty(root)

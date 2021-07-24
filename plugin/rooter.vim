@@ -64,6 +64,51 @@ augroup rooter
   autocmd BufWritePost * nested if !g:rooter_manual_only | call setbufvar('%', 'rootDir', '') | Rooter | endif
 augroup END
 
+function! CustomRooter(targets)
+  if !s:activate_custom(targets) | return | endif
+
+  let root = getbufvar('%', 'rootDir')
+  if empty(root)
+    let root = s:root()
+    call setbufvar('%', 'rootDir', root)
+  endif
+
+  if empty(root)
+    call s:rootless()
+    return
+  endif
+
+  call s:cd(root)
+endfunction
+
+function! s:activate_custom(targets)
+  " Directory browser plugins (e.g. vim-dirvish, NERDTree) tend to
+  " set a nofile buftype when you open a directory.
+  if &buftype != '' && &buftype != 'nofile' | return 0 | endif
+
+  let patterns = split(targets, ',')
+  let fn = expand('%:p', 1)
+
+  if fn =~ 'NERD_tree_\d\+$' | let fn = b:NERDTree.root.path.str().'/' | endif
+
+  " directory
+  if empty(fn) || fn[-1:] == '/'
+    return index(patterns, '/') != -1
+  endif
+
+  " file
+  if !filereadable(fn) | return 0 | endif
+  if !exists('*glob2regpat') | return 1 | endif
+
+  for p in filter(copy(patterns), 'v:val != "/"')
+    if fn =~ glob2regpat(p)
+      return 1
+    endif
+  endfor
+
+  return 0
+endfunction
+
 
 function! s:rooter()
   if !s:activate() | return | endif
